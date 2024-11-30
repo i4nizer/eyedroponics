@@ -34,7 +34,7 @@ const inactivityThreshold = 2000; // 2 seconds
 
 onMounted(() => {
     // Connect to WebSocket server
-    socket = io("http://localhost:PORT"); // Replace PORT with your server's port
+    socket = io("http://localhost:4000"); // Replace PORT with your server's port
 
     // Listen for 'image' events
     socket.on("image", (imageBuffer) => {

@@ -12,17 +12,21 @@ const imageController = {
             const { file } = req
             if (!file) return res.status(400).send('No file uploaded')
             
+            // respond earlier
+            res.send({ txt: 'File uploaded successfully' })
+            
             // Read the uploaded file as a buffer
             const imageBuffer = fs.readFileSync(file.path);
+
+            // Detect pest in image
+            
 
             // Emit the image buffer to WebSocket clients
             io.emit('image', imageBuffer);
 
-            res.send({ txt: 'File uploaded and broadcasted successfully' })
-        } catch (error) {
-            res.status(500).send(error.toString())
-            console.log(error)
-        }
+            
+
+        } catch (error) { res.status(500).send(error.toString()) }
     },
 
 }
