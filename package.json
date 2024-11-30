@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "backend": "nodemon backend/api.js",
-    "frontend": "vite frontend"
+    "frontend": "vite frontend",
+    "train": "node tfjs-model-training/sf-training.js"
   },
   "keywords": [],
   "author": "",

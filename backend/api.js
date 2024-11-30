@@ -10,7 +10,7 @@ const database = require('./config/database.config')
 const app = express()
 
 // Use middleware
-app.use(cors({ origin: '*', credentials: true }))
+app.use(cors({ origin: ['http://localhost:3000', '*'], credentials: true }))
 app.use('/api', router)
 
 
@@ -18,7 +18,7 @@ app.use('/api', router)
 app.listen(config.port, () => console.log(`Server running on http://localhost:${config.port}`))
 
 
-// database
-//     .connectDatabase()
-//     .then(() => console.log('Database Connected Successfully'))
-//     .catch((err) => console.error(err))
+database
+    .connectDatabase()
+    .then(() => console.log('Database Connected Successfully'))
+    .catch((err) => console.error(err))
