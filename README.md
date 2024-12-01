@@ -27,5 +27,5 @@ This project integrates IoT devices (ESP32 and ESP32-CAM) with a CNN-based pest 
 -   [x] Upload unified repository
 -   [ ] Upload documentation
 
-### Data set Gdrive link
+### Datasets Gdrive link
 - https://drive.google.com/drive/folders/1YJ5P_mllLxW-nZZKgBie46VHxkJFLOik
