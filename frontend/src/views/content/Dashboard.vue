@@ -1,6 +1,7 @@
 <template>
     <v-container class="pa-10">
         <ProjectStatsCard 
+            class="mt-2"
             v-for="proj in project.projects" 
             :key="proj?._id"
             :project-id="proj?._id"
