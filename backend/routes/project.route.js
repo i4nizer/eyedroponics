@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
+const sensorRoutes = require('./sensor.route')
 const deviceRoutes = require('./device.route')
 const thresholdRoutes = require('./threshold.route')
 
@@ -15,6 +16,8 @@ const { getProject, getProjects, postProject, patchProject, deleteProject } = re
 router.route('/')   
     .get(getProjects)
     .post(validatePostProject, postProject);
+
+router.use('/sensor', sensorRoutes);
 
 router.get('/device', getDevices)
 router.get('/threshold', getThresholds)

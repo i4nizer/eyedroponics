@@ -13,13 +13,14 @@ import { useDataStore } from '@/store/data';
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js'
 
 
+// Chart
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
-
-const data = useDataStore()
-const props = defineProps(['project-id'])
-
 const chartData = computed(() => data.getNPKChartData(props.projectId))
-
 const options = { responsive: true, maintainAspectRatio: true }
+
+// Data
+const data = useDataStore()
+
+
 
 </script>

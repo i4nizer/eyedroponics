@@ -1,35 +1,38 @@
-const upload = require('../config/multer.config')
-const { io } = require('../services/socket.io')
-const fs = require('fs')
+const PDModel = require('../utils/pest-detection-model');
+const upload = require('../config/multer.config');
+const { emitOnApiKey } = require('../services/socket.io');
+
 
 
 const imageController = {
-    
     uploadImage: upload.single('image'),
 
     postImage: async (req, res) => {
+        let resSent = false;
+        
         try {
-            const { file } = req
-            if (!file) return res.status(400).send('No file uploaded')
-            
-            // respond earlier
-            res.send({ txt: 'File uploaded successfully' })
-            
-            // Read the uploaded file as a buffer
-            const imageBuffer = fs.readFileSync(file.path);
+            const { file } = req;
+            if (!file) return res.status(400).send('No file uploaded');
 
-            // Detect pest in image
-            
+            // Respond to the client early
+            res.send({ message: 'File uploaded successfully' });
+            resSent = true;
 
-            // Emit the image buffer to WebSocket clients
-            io.emit('image', imageBuffer);
+            // Detect pest in the image
+            const prediction = await PDModel.predict(file.path);
 
-            
+            // Emit { predictedIndex, predictedClass, probabilities, imageBuffer }
+            const apiKey = req.headers['x-api-key'];
+            emitOnApiKey(apiKey, prediction);
 
-        } catch (error) { res.status(500).send(error.toString()) }
+        } catch (error) {
+            console.error(error);
+            if (!resSent) res.status(500).send(error.toString());
+        }
     },
+};
 
-}
 
 
-module.exports = imageController
+
+module.exports = imageController;

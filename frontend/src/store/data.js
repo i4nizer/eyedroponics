@@ -30,7 +30,7 @@ export const useDataStore = defineStore('Data', () => {
 
     // ---NPKs
     const fetchNPKs = async () => {
-        const res = await api.get(`/user/project/npk`)
+        const res = await api.get(`/user/project/sensor/npk`)
 
         if (res.status < 300 && res.data) NPKs.value = res.data.obj
         return res
@@ -38,7 +38,7 @@ export const useDataStore = defineStore('Data', () => {
 
     const getNPKChartData = (projectId) => {
         const N = {
-            label: 'Nitrogen',
+            label: 'Nitrogen',  
             backgroundColor: '#4CAF50',
             borderColor: '#4CAF50',
             data: [],
@@ -74,7 +74,7 @@ export const useDataStore = defineStore('Data', () => {
     
     // ---PHs
     const fetchPHs = async () => {
-        const res = await api.get(`/user/project/ph`)
+        const res = await api.get(`/user/project/sensor/ph`)
 
         if (res.status < 300 && res.data) PHs.value = res.data.obj
         return res

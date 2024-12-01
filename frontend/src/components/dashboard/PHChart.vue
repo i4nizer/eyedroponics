@@ -13,14 +13,18 @@ import { useDataStore } from '@/store/data';
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js'
 
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
-
-const data = useDataStore()
+// Props
 const props = defineProps(['project-id'])
 
+// Chart
+ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
 const chartData = computed(() => data.getPHChartData(props.projectId))
-
 const options = { responsive: true, maintainAspectRatio: true }
+
+// Data
+const data = useDataStore()
+const pHData = data.getPHChartData()
+
 
 
 </script>

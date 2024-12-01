@@ -4,7 +4,8 @@ const cors = require('cors')
 
 const router = require('./routes/router')
 const config = require('./config/config')
-// const database = require('./config/database.config')
+const database = require('./config/database.config')
+const PDModel = require('./utils/pest-detection-model')
 const { attachWebSocketServer } = require('./services/socket.io')
 
 
@@ -12,7 +13,7 @@ const { attachWebSocketServer } = require('./services/socket.io')
 const app = express()
 
 // Use middleware
-app.use(cors({ origin: '*', credentials: true }))
+app.use(cors({ origin: ['http://localhost:3000', '*'], credentials: true }))
 app.use('/api', router)
 
 
@@ -26,7 +27,9 @@ server.listen(config.port, () => console.log(`Server running on http://localhost
 
 
 
-// database
-//     .connectDatabase()
-//     .then(() => console.log('Database Connected Successfully'))
-//     .catch((err) => console.error(err))
+database
+    .connectDatabase()
+    .then(() => console.log('Database Connected Successfully'))
+    .catch((err) => console.error(err))
+
+PDModel.load()

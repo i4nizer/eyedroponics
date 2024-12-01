@@ -1,4 +1,4 @@
-# Smart Hydroponics with NPK Sensor, pH Sensor, and Pest Detection System using CNN Model
+# SMART HYDROPONICS: INTEGRATING NUTRIENT LEVEL AND PH LEVEL SENSOR WITH CAMERA-BASED PEST DETECTION SYSTEM 
 
 This project integrates IoT devices (ESP32 and ESP32-CAM) with a CNN-based pest detection model to create a smart hydroponics system. The system monitors and optimizes plant health using NPK and pH sensors, while providing real-time pest detection to enhance crop yield and sustainability. The backend and frontend enable seamless data visualization and control for users.
 
@@ -26,3 +26,4 @@ This project integrates IoT devices (ESP32 and ESP32-CAM) with a CNN-based pest 
 
 -   [x] Upload unified repository
 -   [ ] Upload documentation
+

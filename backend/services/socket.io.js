@@ -1,6 +1,10 @@
 const { Server } = require("socket.io");
 
 
+// Store the socketids using device apikeys
+const socketMap = new Map();
+
+
 
 // Create the WebSocket server instance
 const io = new Server({
@@ -16,23 +20,23 @@ const io = new Server({
  */
 const onConnection = (socket) => {
     
-    console.log(`ESP32 or client connected: ${socket.id}`);
+    console.log(`Client connected: ${socket.id}`);
 
-    // Register individual event handlers
-    socket.on("image", (imageBuffer) => onImage(socket, imageBuffer));
+    // image-<apiKey> postfix for the emit
+    socket.on('register', (apiKey) => socketMap.set(apiKey, socket))
+    socket.on('unregister', (apiKey) => socketMap.delete(apiKey))
+    
     socket.on("disconnect", () => onDisconnect(socket));
 }
 
 /**
- * Handles image data received from ESP32-CAM.
- * @param {import("socket.io").Socket} socket - The socket instance.
- * @param {Buffer} imageBuffer - The image data received from the ESP32-CAM.
+ * @param {string} key ApiKey of the device
  */
-const onImage = (socket, imageBuffer) => {
-    console.log(`Received image from ESP32: ${imageBuffer.length} bytes`);
+const emitOnApiKey = (key, args) => {
+    const socket = socketMap.get(key);
+    if (!socket) return;
 
-    // Broadcast the image to all clients
-    io.emit("image", imageBuffer);
+    socket.emit(`image-${key}`, args)
 }
 
 /**
@@ -56,4 +60,4 @@ const attachWebSocketServer = (server) => {
 
 
 
-module.exports = { io, attachWebSocketServer };
+module.exports = { io, emitOnApiKey, attachWebSocketServer };
