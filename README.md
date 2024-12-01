@@ -4,12 +4,12 @@ This project integrates IoT devices (ESP32 and ESP32-CAM) with a CNN-based pest 
 
 ### Team Roles
 
-| Name    | Role(s)                                                |
-| ------- | ------------------------------------------------------ |
-| Jade    | Model Training                                         |
-| Jordan  | Documentation                                          |
-| Charles | Documentation                                          |
-| Ian     | Backend, Frontend, IoT Programming (ESP32 & ESP32-Cam) |
+| Name    | Username           | Role(s)                                                |
+| ------- | ------------------ | ------------------------------------------------------ |
+| Jade    | Jordan200315       | Model Training                                         |
+| Jordan  | JadeFabricante     | Documentation                                          |
+| Charles | Charlees-Masangkay | Documentation                                          |
+| Ian     | i4nizer            | Backend, Frontend, IoT Programming (ESP32 & ESP32-Cam) |
 
 ### Installation (Developers)
 
@@ -28,4 +28,4 @@ This project integrates IoT devices (ESP32 and ESP32-CAM) with a CNN-based pest 
 -   [x] Upload documentation
 
 ### Datasets Gdrive link
-- https://drive.google.com/drive/folders/1YJ5P_mllLxW-nZZKgBie46VHxkJFLOik
+- https://drive.google.com/drive/folders/1S11kboIlvEjgLOzfRlA9NLy8B5vgJ95y?usp=sharing
