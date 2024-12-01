@@ -6,7 +6,7 @@ const router = require('./routes/router')
 const config = require('./config/config')
 const database = require('./config/database.config')
 const PDModel = require('./utils/pest-detection-model')
-const { attachWebSocketServer } = require('./services/socket.io')
+const { attachWebSocketServer } = require('./utils/socket.io')
 
 
 // Initialize Express app

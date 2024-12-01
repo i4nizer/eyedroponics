@@ -9,18 +9,6 @@ const imageSchema = new mongoose.Schema(
         },
         pestDetected: {
             type: String,
-            enum: [
-                'None',
-                'Aphids',
-                'Cutworms',
-                'Leafminers',
-                'Armyworms',
-                'Thrips',
-                'Flea Beetles',
-                'Slugs',
-                'Snails',
-                'Whiteflies',
-            ],
             default: 'None'
         },
         deviceId: {

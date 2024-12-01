@@ -1,15 +1,12 @@
 const express = require('express')
-const router = express.Router()
+const router = express.Router({ mergeParams: true })
 
-// req.key = { userId, projectId, deviceId: device._id }
-const { checkApiKey } = require('../middlewares/token.middleware')
-
-const { uploadImage, postImage } = require('../controllers/image.controller')
+const { uploadImage, postImage, postPH, postNPK } = require('../controllers/api.controller')
 
 
-router.post('/ph')
-router.post('/npk')
-router.post('/image', checkApiKey, uploadImage, postImage)
+router.post('/ph', postPH)
+router.post('/npk', postNPK)
+router.post('/image', uploadImage, postImage)
 
 
 module.exports = router
