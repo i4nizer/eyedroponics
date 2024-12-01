@@ -10,12 +10,12 @@
             />
             <NPKChart 
                 v-for="npk in NPKs"
-                :device-id="npk._id"
+                :project-id="props.projectId"
                 :key="npk._id"
             />
             <PHChart 
                 v-for="ph in PHs"
-                :device-id="ph._id"
+                :project-id="props.projectId"
                 :key="ph._id"
             />
             

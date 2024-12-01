@@ -7,6 +7,10 @@ const preferenceSchema = new mongoose.Schema(
             type: Boolean,
             default: true
         },
+        emailAlertInterval: {
+            type: Number,
+            default: 60         // This was in minutes
+        },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

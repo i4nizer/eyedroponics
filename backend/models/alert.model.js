@@ -26,4 +26,4 @@ const alertSchema = new mongoose.Schema(
 )
 
 
-module.exports = mongoose.model('NPK', alertSchema)
+module.exports = mongoose.model('Alert', alertSchema)

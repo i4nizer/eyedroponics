@@ -13,6 +13,9 @@ import { useDataStore } from '@/store/data';
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale } from 'chart.js'
 
 
+// Props
+const props = defineProps(['project-id'])
+
 // Chart
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale)
 const chartData = computed(() => data.getNPKChartData(props.projectId))

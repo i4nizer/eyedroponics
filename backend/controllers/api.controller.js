@@ -1,3 +1,4 @@
+const fs = require('fs')
 const upload = require('../config/multer.config');
 
 const phModel = require('../models/ph.model')
@@ -46,16 +47,12 @@ const apiController = {
             emitOnApiKey(apiKey, prediction);
 
             // No Pest: remove the image file
-            if (prediction.predictedClass == 'None') {
-                // unlink file
-            }
-            
-            // On Pest Detected: Alert the owner
+            if (prediction.predictedClass == 'None') return fs.unlinkSync(file.path)
             
             // Save the image if pest is detected
-            const image = new imageModel({ imageUrl: file.path, deviceId, projectId })
+            const image = new imageModel({ imageUrl: file.path, pestDetected: prediction.predictedClass, deviceId, projectId })
             await image.save()
-            
+
             // Alert
             await alertService.createPestAlert(userId)
 
