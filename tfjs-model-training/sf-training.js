@@ -5,8 +5,8 @@ const path = require('path');
 // Define paths and constants
 const TRAIN_DATA_DIR = './tfjs-model-training/data/train';
 const VALIDATION_DATA_DIR = './tfjs-model-training/data/val';
-const BATCH_SIZE = 16;
-const EPOCHS = 10;
+const BATCH_SIZE = 64;
+const EPOCHS = 100;
 const IMAGE_SIZE = 128;
 const MODEL_DIR = './tfjs-model-training/models/v4';
 
@@ -32,23 +32,27 @@ function loadImageDataset(dataDir, numClasses) {
         });
     });
 
-    // Create a TensorFlow dataset
     const dataset = tf.data.generator(function* () {
         for (let i = 0; i < imagePaths.length; i++) {
-            const imageBuffer = fs.readFileSync(imagePaths[i]);
-            const imageTensor = tf.node.decodeImage(imageBuffer, 3)
-                .resizeNearestNeighbor([IMAGE_SIZE, IMAGE_SIZE])
-                .squeeze()
-                .toFloat()
-                .div(255.0);
+            yield tf.tidy(() => {
+                const imageBuffer = fs.readFileSync(imagePaths[i]);
+                const imageTensor = tf.node.decodeImage(imageBuffer, 3)
+                    .resizeNearestNeighbor([IMAGE_SIZE, IMAGE_SIZE])
+                    .toFloat()
+                    .div(255.0)
+                    .reshape([IMAGE_SIZE, IMAGE_SIZE, 3]); // Explicitly reshape to ensure no batch dimension
 
-            const label = tf.oneHot(tf.tensor1d([labels[i]], 'int32'), numClasses).squeeze();
-            yield { xs: imageTensor, ys: label };
+                const label = tf.oneHot(tf.tensor1d([labels[i]], 'int32'), numClasses).squeeze();
+
+                return { xs: imageTensor, ys: label };
+            });
         }
     });
 
-    return dataset.batch(BATCH_SIZE).prefetch(1); // Prefetch for performance
+
+    return dataset.batch(BATCH_SIZE).shuffle(100).prefetch(1); // Improved
 }
+
 
 
 // Determine the number of classes
@@ -89,17 +93,17 @@ model.compile({
 });
 
 // Train the model
-console.log("Starting training...");
+console.log("Before training:", tf.memory());
 (async () => {
     try {
+        console.log("Starting training...");
         await model.fitDataset(trainDataset, {
             validationData: validationDataset,
             epochs: EPOCHS,
             callbacks: {
+                onBatchEnd: (batch, logs) => console.log(`\nBatch ${batch + 1}: loss = ${logs.loss}, accuracy = ${logs.acc}`),
                 onEpochEnd: (epoch, logs) => {
-                    console.log(
-                        `Epoch ${epoch + 1}: loss = ${logs.loss}, accuracy = ${logs.acc}`
-                    );
+                    console.log(`\nEpoch ${epoch + 1}: loss = ${logs.loss}, accuracy = ${logs.acc}`);
                     console.log("Memory after epoch:", tf.memory());
                 },
             },
@@ -108,6 +112,7 @@ console.log("Starting training...");
         console.log("Saving the model...");
         await model.save('file://' + MODEL_DIR);
         console.log("Model training and saving complete.");
+        console.log("After training:", tf.memory());
     } catch (error) {
         console.error("Error during training or saving:", error);
     } finally {
