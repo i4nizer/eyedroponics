@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "backend": "nodemon backend/server.js",
+    "backend": "node backend/server.js",
+    "backend-nodemon": "nodemon backend/server.js",
     "frontend": "vite frontend",
+    "frontend-host": "vite frontend --host",
     "train": "node tfjs-model-training/sf-training.js"
   },
   "keywords": [],

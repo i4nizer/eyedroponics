@@ -79,12 +79,11 @@ const userController = {
     postRefreshToken: async (req, res) => {
         try {
             // access
-            const userId = req.params.userId
             const token = req.body.token
 
             // check in jwt and db
             jwt.verify(token, refreshKey)
-            const user = await userModel.findOne({ _id: userId, token })
+            const user = await userModel.findOne({ token })
             if (!user) return res.status(404).send('Token not found or invalid')
             
             // issue new token
