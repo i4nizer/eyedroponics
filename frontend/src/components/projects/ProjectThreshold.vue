@@ -6,27 +6,33 @@
                 prepend-icon="mdi-molecule"
                 v-model="nitrogen" 
                 thumb-label="always"
-                label="Nitrogen"
+                label="Nitrogen (ppm)"
                 color="blue"
                 direction="vertical"
+                min="0"
+                max="500"
                 strict
             ></v-range-slider>
             <v-range-slider 
                 prepend-icon="mdi-flask-outline"
                 v-model="phosphorus" 
                 thumb-label="always"
-                label="Phosphorus"
+                label="Phosphorus (ppm)"
                 color="purple"
                 direction="vertical"
+                min="0"
+                max="500"
                 strict
             ></v-range-slider>
             <v-range-slider 
                 prepend-icon="mdi-atom"
                 v-model="potassium" 
                 thumb-label="always"
-                label="Potassium"
+                label="Potassium (ppm)"
                 color="orange"
                 direction="vertical"
+                min="0"
+                max="500"
                 strict
             ></v-range-slider>
             <v-range-slider 
@@ -36,6 +42,8 @@
                 label="pH"
                 color="green"
                 direction="vertical"
+                min="0"
+                max="14"
                 strict
             ></v-range-slider>
         </v-card-text>

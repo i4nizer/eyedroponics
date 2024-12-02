@@ -25,7 +25,7 @@ const getDatasetManifest = (directory, classToLabel) => {
 
         files.forEach((fileName) => {
             
-        manifest.push({ path: path.join(classDirPath, fileName), label: classToLabel[className], })
+            manifest.push({ path: path.join(classDirPath, fileName), label: classToLabel[className], })
         })
     })
 
@@ -38,14 +38,15 @@ const createDataset = (manifest, batchSize, classLabels) => {
 
     return tf.data.generator(function* () {
         for (const { path: imagePath, label } of manifest) {
-        const imageBuffer = fs.readFileSync(imagePath) // Load image buffer
-        const image = tf.node.decodeImage(imageBuffer, 3) // Decode image
-            .resizeBilinear([128, 128]) // Resize
-            .toFloat()
-            .div(255.0) // Normalize
+            
+            const imageBuffer = fs.readFileSync(imagePath)      // Load image buffer
+            const image = tf.node.decodeImage(imageBuffer, 3)   // Decode image
+                .resizeBilinear([128, 128]) // Resize
+                .toFloat()
+                .div(255.0) // Normalize
 
-        const labelTensor = tf.oneHot(label, numClasses) // One-hot encoding
-        yield { xs: image, ys: labelTensor }
+            const labelTensor = tf.oneHot(label, numClasses) // One-hot encoding
+            yield { xs: image, ys: labelTensor }
         }
     })
     .batch(batchSize)

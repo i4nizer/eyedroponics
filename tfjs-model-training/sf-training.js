@@ -8,7 +8,7 @@ const VALIDATION_DATA_DIR = './tfjs-model-training/data/val';
 const BATCH_SIZE = 16;
 const EPOCHS = 10;
 const IMAGE_SIZE = 128;
-const MODEL_DIR = './tfjs-model-training/models/v3';
+const MODEL_DIR = './tfjs-model-training/models/v4';
 
 // Function to determine the number of classes
 function getNumClasses(dataDir) {
@@ -38,17 +38,18 @@ function loadImageDataset(dataDir, numClasses) {
             const imageBuffer = fs.readFileSync(imagePaths[i]);
             const imageTensor = tf.node.decodeImage(imageBuffer, 3)
                 .resizeNearestNeighbor([IMAGE_SIZE, IMAGE_SIZE])
+                .squeeze()
                 .toFloat()
-                .div(255.0); // Normalize pixel values to [0, 1]
+                .div(255.0);
 
             const label = tf.oneHot(tf.tensor1d([labels[i]], 'int32'), numClasses).squeeze();
-
             yield { xs: imageTensor, ys: label };
         }
     });
 
     return dataset.batch(BATCH_SIZE).prefetch(1); // Prefetch for performance
 }
+
 
 // Determine the number of classes
 const numClasses = getNumClasses(TRAIN_DATA_DIR);

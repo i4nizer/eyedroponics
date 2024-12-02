@@ -19,7 +19,11 @@ const userController = {
             await user.save()
             
             // create preference with userId
-            const prefDoc = { emailAlerts: req.body?.emailAlerts || true, userId: user._id }
+            const prefDoc = {
+                emailAlerts: req.body?.emailAlerts || true,
+                emailAlertInterval: req.body?.emailAlertInterval || 60,
+                userId: user._id
+            }
             const pref = new preferenceModel(prefDoc)
             await pref.save()
             
@@ -51,6 +55,9 @@ const userController = {
             // save refresh token in db
             user.token = refresh
             await user.save()
+
+            // get created user pref
+            const pref = await preferenceModel.findOne({ userId: user._id })
             
             // send user and tokens
             const userDoc = {
@@ -59,7 +66,9 @@ const userController = {
                 email: user.email,
                 verified: user.verified,
                 role: user.role,
-                access, refresh
+                access, refresh,
+                emailAlerts: pref.emailAlerts,
+                emailAlertInterval: pref.emailAlertInterval
             }
 
             res.send({ txt: 'User signed-in successfully', obj: userDoc })

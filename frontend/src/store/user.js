@@ -1,3 +1,4 @@
+import api from "@/utils/api";
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 
@@ -11,6 +12,9 @@ export const useUserStore = defineStore('user', () => {
     const verified = ref(localStorage.getItem('user-verified') || '');
     const role = ref(localStorage.getItem('user-role') || '');
 
+    const emailAlerts = ref(localStorage.getItem('user-pref-email-alerts') == "true")
+    const emailAlertInterval = ref(localStorage.getItem('user-pref-email-alert-interval') || 60)
+
 
     // ---getters
 
@@ -23,6 +27,9 @@ export const useUserStore = defineStore('user', () => {
     watch(verified, (nv) => localStorage.setItem('user-verified', nv));
     watch(role, (nv) => localStorage.setItem('user-role', nv));
     
+    watch(emailAlerts, (nv) => localStorage.setItem('user-pref-email-alerts', nv));
+    watch(emailAlertInterval, (nv) => localStorage.setItem('user-pref-email-alert-interval', nv));
+    
 
     
 
@@ -34,7 +41,19 @@ export const useUserStore = defineStore('user', () => {
         verified.value = user?.verified
         role.value = user?.role
     }
+
+    const setPref = (pref) => {
+        emailAlerts.value = pref?.emailAlerts
+        emailAlertInterval.value = pref?.emailAlertInterval
+    }
     
+    const editPref = async (emailAlerts, emailAlertInterval) => {
+        const data = { emailAlerts, emailAlertInterval }
+        const res = await api.patch(`/user/preference`, data)
+        
+        if (res.status < 300 && res.data) setPref(res.data.obj)
+        return res
+    }
     
 
     // expose
@@ -44,6 +63,12 @@ export const useUserStore = defineStore('user', () => {
         email,
         verified,
         role,
-        set
+        
+        emailAlerts,
+        emailAlertInterval,
+
+        set,
+        setPref,
+        editPref,
     }
 })

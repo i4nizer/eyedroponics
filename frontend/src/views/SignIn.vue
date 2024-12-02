@@ -88,6 +88,7 @@ const submitSignInForm = async () => {
 
             // save credentials to store
             user.set(res.data.obj);
+            user.setPref(res.data.obj);
 
             // save token to store
             token.set(res.data.obj.access, res.data.obj.refresh);

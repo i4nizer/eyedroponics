@@ -13,6 +13,6 @@ router.use((req, res, next) => { console.log(`${new Date().toISOString()} - ${re
 router.use('/user', userRoutes)
 router.use('/', checkApiKey, apiRoutes)
 
-    
+
 
 module.exports = router
