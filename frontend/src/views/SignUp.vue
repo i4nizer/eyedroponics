@@ -59,6 +59,9 @@
 </template>
 
 <script setup>
+import dotenv from "dotenv"
+dotenv.config()
+
 import axios from "axios";
 import rules from "@/utils/rules";
 import notif from "@/utils/notif";
@@ -100,8 +103,10 @@ const submitSignUpForm = async () => {
 
         // send without tokens
         loading.value = true;
+        const url = `${process.env.FRONTEND_PROTOCOL}://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}/api/user/sign-up`
+
         await axios
-            .post("http://localhost:4000/api/user/sign-up", credentials)
+            .post(url, credentials)
             .then(onOk)
             .catch((err) => notif.addError(err))
             .finally(() => (loading.value = false));

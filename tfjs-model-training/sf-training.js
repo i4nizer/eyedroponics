@@ -5,10 +5,10 @@ const path = require('path');
 // Define paths and constants
 const TRAIN_DATA_DIR = './tfjs-model-training/data/train';
 const VALIDATION_DATA_DIR = './tfjs-model-training/data/val';
-const BATCH_SIZE = 64;
-const EPOCHS = 100;
+const BATCH_SIZE = 32;
+const EPOCHS = 50;
 const IMAGE_SIZE = 128;
-const MODEL_DIR = './tfjs-model-training/models/v4';
+const MODEL_DIR = './tfjs-model-training/models/v5';
 
 // Function to determine the number of classes
 function getNumClasses(dataDir) {

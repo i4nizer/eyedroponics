@@ -13,7 +13,7 @@ const { attachWebSocketServer } = require('./utils/socket.io')
 const app = express()
 
 // Use middleware
-app.use(cors({ origin: ['http://localhost:3000', '*'], credentials: true }))
+app.use(cors({ origin: [config.frontendDomain, '*'], credentials: true }))
 app.use('/api', router)
 
 
@@ -23,7 +23,7 @@ attachWebSocketServer(server)
 
 
 // Start the server
-server.listen(config.port, () => console.log(`Server running on http://localhost:${config.port}`))
+server.listen(config.backendPort, () => console.log(`Server running on ${config.backendProtocol}://${config.backendHost}:${config.backendPort}`))
 
 
 

@@ -15,7 +15,7 @@ app.use('/api', router)
 
 
 // Start the server
-app.listen(config.port, () => console.log(`Server running on http://localhost:${config.port}`))
+app.listen(config.backendPort, () => console.log(`Server running on ${config.backendProtocol}://${config.backendHost}:${config.backendPort}`))
 
 
 database

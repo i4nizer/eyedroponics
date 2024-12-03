@@ -3,7 +3,14 @@ require('dotenv').config()
 
 const config = {
 
-    port: process.env.PORT,
+    backendProtocol: process.env.BACKEND_PROTOCOL,
+    backendHost: process.env.BACKEND_HOST,
+    backendPort: process.env.BACKEND_PORT,
+    
+    frontendProtocol: process.env.FRONTEND_PROTOCOL,
+    frontendHost: process.env.FRONTEND_HOST,
+    frontendPort: process.env.FRONTEND_PORT,
+
     dbPassword: process.env.DB_PASSWORD,
 
     emailUser: process.env.EMAIL_USER,
