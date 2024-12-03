@@ -28,6 +28,11 @@ const routes = [
         name: 'Profile',
         component: () => import('@/views/content/Profile.vue')
     },
+    {
+        path: '/alerts',
+        name: 'Alerts',
+        component: () => import('@/views/content/Alerts.vue')
+    },
 ];
 
 const router = createRouter({
