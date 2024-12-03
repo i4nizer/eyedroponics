@@ -47,7 +47,7 @@ export const useTokenStore = defineStore('token', () => {
                 access.value = res.data.obj.access
                 refresh.value = res.data.obj.refresh
                 age.value = Date.now() + expiresIn
-                console.log('Refresh Token: ', refresh.value, '\nAccess Token: ', access.value)
+                notif.add("Token Rotated Successfully", 'success')
             })
             .catch(err => {
                 let msg = 'Authentication Error: Kindly sign-in again'
@@ -55,7 +55,7 @@ export const useTokenStore = defineStore('token', () => {
                 
                 // re-auth if invalidated
                 clear()
-                notif.add(msg, 'error')
+                notif.addError(msg)
                 router.push({ name: 'Sign In' })
             })
     }
