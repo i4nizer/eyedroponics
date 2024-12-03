@@ -1,6 +1,3 @@
-import dotenv from "dotenv"
-dotenv.config()
-
 import axios from "axios";
 import notif from "./notif";
 import { useTokenStore } from "@/store/token";
@@ -8,7 +5,7 @@ import router from "../router";
 
 
 const api = axios.create({
-    baseURL: `${process.env.FRONTEND_PROTOCOL}://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}/api`,
+    baseURL: `http://localhost:4000/api`,
     withCredentials: true
 })
 

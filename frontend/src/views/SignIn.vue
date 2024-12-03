@@ -51,9 +51,6 @@
 </template>
 
 <script setup>
-import dotenv from "dotenv"
-dotenv.config()
-
 import axios from "axios";
 import rules from "@/utils/rules";
 import notif from "@/utils/notif";
@@ -103,7 +100,7 @@ const submitSignInForm = async () => {
 
         // authenticate
         loading.value = true;
-        const url = `${process.env.FRONTEND_PROTOCOL}://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}/api/user/sign-in`
+        const url = `http://localhost:4000/api/user/sign-in`
 
         await axios
             .post(url, credentials)

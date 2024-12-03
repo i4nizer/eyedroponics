@@ -13,7 +13,8 @@ const { attachWebSocketServer } = require('./utils/socket.io')
 const app = express()
 
 // Use middleware
-app.use(cors({ origin: [config.frontendDomain, '*'], credentials: true }))
+const frontendDomain = `${config.frontendProtocol}://${config.frontendHost}:${config.frontendPort}`
+app.use(cors({ origin: [frontendDomain, '*'], credentials: true }))
 app.use('/api', router)
 
 
