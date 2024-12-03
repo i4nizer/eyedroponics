@@ -6,9 +6,9 @@ const path = require('path');
 const TRAIN_DATA_DIR = './tfjs-model-training/data/train';
 const VALIDATION_DATA_DIR = './tfjs-model-training/data/val';
 const BATCH_SIZE = 32;
-const EPOCHS = 50;
-const IMAGE_SIZE = 128;
-const MODEL_DIR = './tfjs-model-training/models/v5';
+const EPOCHS = 40;
+const IMAGE_SIZE = 256;
+const MODEL_DIR = './tfjs-model-training/models/v6';
 
 // Function to determine the number of classes
 function getNumClasses(dataDir) {
@@ -32,6 +32,9 @@ function loadImageDataset(dataDir, numClasses) {
         });
     });
 
+    // Display found classes to confirm
+    console.log(`Found ${classes.length} classes: [${classes.join(', ')}]`)
+
     const dataset = tf.data.generator(function* () {
         for (let i = 0; i < imagePaths.length; i++) {
             yield tf.tidy(() => {
@@ -50,7 +53,7 @@ function loadImageDataset(dataDir, numClasses) {
     });
 
 
-    return dataset.batch(BATCH_SIZE).shuffle(100).prefetch(1); // Improved
+    return dataset.batch(BATCH_SIZE).shuffle(100).prefetch(2); // Improved perf
 }
 
 

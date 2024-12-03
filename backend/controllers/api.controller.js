@@ -51,10 +51,10 @@ const apiController = {
             emitOnApiKey(apiKey, prediction);
 
             // No Pest: remove the image file
-            if (prediction.predictedClass == 'None') return fs.unlinkSync(file.path)
+            if (prediction.predictedClass == 'Healthy Lettuce') return fs.unlinkSync(file.path)
             
             // Save the image if pest is detected
-            const image = new imageModel({ imageUrl: file.path, pestDetected: prediction.predictedClass, deviceId, projectId })
+            const image = new imageModel({ filename: file.filename, pestDetected: prediction.predictedClass, deviceId, projectId })
             await image.save()
 
             // Alert
