@@ -39,9 +39,13 @@ const apiController = {
             // Respond to the client early
             res.send({ message: 'File uploaded successfully.' });
             resSent = true;
-
+            
             // Detect presence of pest in the image
             const prediction = await PDModel.predict(file.path);
+
+            // Add imageBuffer in prediction
+            const imageFile = fs.readFileSync(file.path);
+            prediction.imageBuffer = imageFile;
 
             // prediction = { predictedIndex, predictedClass, probabilities, imageBuffer }
             emitOnApiKey(apiKey, prediction);

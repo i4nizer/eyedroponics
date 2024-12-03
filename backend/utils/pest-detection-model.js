@@ -41,7 +41,7 @@ const PDModel = {
      * Preprocess an image for prediction.
      * Resizes the image to the required dimensions, normalizes pixel values, and adds a batch dimension.
      * @param {string} imagePath Path to the input image.
-     * @returns {Object} { imageTensor, imageBuffer } Preprocessed image tensor.
+     * @returns {Object} Preprocessed image tensor.
      */
     preprocessImage: (imagePath) => {
         const imageBuffer = fs.readFileSync(imagePath); // Read image as a buffer
@@ -51,31 +51,34 @@ const PDModel = {
             .div(255.0) // Normalize pixel values to [0, 1]
             .expandDims(); // Add a batch dimension
 
-        return { imageTensor, imageBuffer };
+        return imageTensor;
     },
 
     /**
      * Make a prediction on a single image.
      * Returns the predicted class, index, and probabilities for the input image.
      * @param {string} imagePath Path to the input image.
-     * @returns {Object} Prediction results.
+     * @returns {Object} { predictedIndex, predictedClass, probabilities }
      */
     predict: async (imagePath) => {
         if (!PDModel.MODEL) PDModel.MODEL = await PDModel.load(); // Ensure the model is loaded
 
-        const { imageTensor, imageBuffer } = PDModel.preprocessImage(imagePath); // Preprocess the input image
-        const prediction = PDModel.MODEL.predict(imageTensor); // Perform inference
+        // Use tf.tidy to manage memory for tensors created inside this block
+        const result = tf.tidy(() => {
+            const imageTensor = PDModel.preprocessImage(imagePath); // Preprocess the input image
+            const prediction = PDModel.MODEL.predict(imageTensor); // Perform inference
 
-        // Get the index of the highest probability
-        const predictedIndex = prediction.argMax(-1).dataSync()[0];
-        const predictedClass = PDModel.CLASS_NAMES[predictedIndex];
-        const probabilities = prediction.dataSync(); // Get all prediction probabilities
+            // Get the index of the highest probability and predicted class
+            const predictedIndex = prediction.argMax(-1).dataSync()[0];
+            const probabilities = Array.from(prediction.dataSync()); // Get all prediction probabilities
 
-        // Dispose tensors to free memory
-        tf.dispose([imageTensor, prediction]);
+            return { predictedIndex, probabilities };
+        });
 
-        return { predictedIndex, predictedClass, probabilities, imageBuffer };
+        const predictedClass = PDModel.CLASS_NAMES[result.predictedIndex];
+        return { ...result, predictedClass };
     },
+
 };
 
 
