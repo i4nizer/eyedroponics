@@ -16,7 +16,7 @@ const tokenMiddleware = {
             const payload = jwt.verify(token, config.accessKey)
             req.token = payload
             next()
-        } catch (error) { res.status(403).send(error.toString()) }
+        } catch (error) { res.status(401).send(error.toString()) }
     },
 
     /** Requires token in req.body */

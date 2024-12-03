@@ -34,11 +34,13 @@ api.interceptors.response.use(
 
         if (error.response && error.response.status === 401) {
             
-            notif.add(error.response.data.toString(), "error", 3000)
+            const token = useTokenStore()
+            await token.rotate()
         }
         else if (error.response && error.response.status === 403) {
             
             router.push({ name: 'Sign In' })
+            notif.add(error.response.data.toString(), "error", 3000)
         }
 
         console.log(error)

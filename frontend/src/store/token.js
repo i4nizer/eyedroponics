@@ -40,13 +40,8 @@ export const useTokenStore = defineStore('token', () => {
 
     const rotate = async () => {
         
-        const config = {
-            withCredentials: true,
-            headers: { 'Authorization': `Bearer ${access.value}` }
-        }
-
         await axios
-            .post('http://localhost:4000/api/user/token', { token: refresh.value }, config)
+            .post('http://localhost:4000/api/user/token', { token: refresh.value }, { withCredentials: true })
             .then(res => {  
                 // rotate & log
                 access.value = res.data.obj.access
