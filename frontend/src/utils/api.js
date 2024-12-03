@@ -12,11 +12,15 @@ const api = axios.create({
 
 api.interceptors.request.use(
     
-    // add access token in headers
-    (config) => {
-
+    async (config) => {
+        
         const token = useTokenStore()
-        if (token) config.headers['Authorization'] = `Bearer ${token.access}`
+        
+        // check if needs rotation
+        if (!token.access && token.refresh) await token.rotate()
+        
+        // add access token in headers
+        if (token.access) config.headers['Authorization'] = `Bearer ${token.access}`
 
         return config
     },
@@ -26,7 +30,7 @@ api.interceptors.response.use(
     (res) => res,
     
     // log errors
-    (error) => {
+    async (error) => {
 
         if (error.response && error.response.status === 401) {
             

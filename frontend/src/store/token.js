@@ -1,8 +1,8 @@
-import api from "@/utils/api"
 import { defineStore } from "pinia"
 import { ref, watch } from "vue"
 import notif from '@/utils/notif'
 import router from "@/router"
+import axios from "axios"
 
 
 
@@ -40,8 +40,13 @@ export const useTokenStore = defineStore('token', () => {
 
     const rotate = async () => {
         
-        await api
-            .post('/user/token', { token: refresh.value })
+        const config = {
+            withCredentials: true,
+            headers: { 'Authorization': `Bearer ${access.value}` }
+        }
+
+        await axios
+            .post('http://localhost:4000/api/user/token', { token: refresh.value }, config)
             .then(res => {  
                 // rotate & log
                 access.value = res.data.obj.access
