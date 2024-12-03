@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
+const alertRoutes = require('./alert.route')
 const projectRoutes = require('./project.route')
 const preferenceRoutes = require('./preference.route')
 
@@ -15,6 +16,7 @@ router.post('/sign-up', validateSignUp, setRole('User'), postSignUp)
 router.post('/sign-in', validateSignIn, setRole('User'), postSignIn)
 router.post('/token', checkRefreshToken, postRefreshToken)
 
+router.use('/alert', checkAccessToken, checkUserID, alertRoutes)
 router.use('/project', checkAccessToken, checkUserID, projectRoutes)
 router.use('/preference', checkAccessToken, checkUserID, preferenceRoutes)
 
