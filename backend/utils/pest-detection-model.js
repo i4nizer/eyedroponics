@@ -7,17 +7,40 @@ const fs = require('fs');
 const PDModel = {
 
     // Directory where the TensorFlow.js model is stored
-    MODEL_DIR: './tfjs-model-training/models/v4/model.json',
+    modelDir: './tfjs-model-training/models/v4/model.json',
     
     // Image size to which all inputs will be resized
-    IMAGE_SIZE: 128,
-    
-    // Class names corresponding to the model's outputs
-    CLASS_NAMES: ['aphids', 'armyworm', 'cutworm', 'leafminer', 'slugs', 'snails', 'whitefly'],
-    
+    imageSize: 128,
+
+    // Class name as read from a directory
+    classNames: [],
+
     // Placeholder for the loaded model
-    MODEL: null,
-    LOADING_PROMISE: null,
+    model: null,
+    loadingPromise: null,
+
+    /**
+     * Reads folder names from a specified directory.
+     * @param {string} dirPath - The path to the directory.
+     * @returns {string[]} An array of folder names.
+     */
+    getFolderNames: (dirPath) => {
+        try {
+            // Read all contents of the directory
+            const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+
+            // Filter for directories and map to their names
+            const folderNames = entries
+                .filter(entry => entry.isDirectory())
+                .map(folder => folder.name);
+
+            return folderNames;
+        }
+        catch (error) {
+            console.error('Error reading directory:', error.message);
+            return [];
+        }
+    },
 
     /**
      * Load the TensorFlow.js model.
@@ -25,16 +48,22 @@ const PDModel = {
      * Logs the time taken for loading the model.
      */
     load: async () => {
-        if (PDModel.MODEL) return PDModel.MODEL; // Return the cached model if already loaded
-        if (PDModel.LOADING_PROMISE) return await PDModel.LOADING_PROMISE;
+        if (PDModel.model) return PDModel.model; // Return the cached model if already loaded
+        if (PDModel.loadingPromise) return await PDModel.loadingPromise;
 
         console.time('Model Loading');
-        PDModel.LOADING_PROMISE = tf.loadLayersModel(`file://${PDModel.MODEL_DIR}`);
-        PDModel.MODEL = await PDModel.LOADING_PROMISE;
-        PDModel.LOADING_PROMISE = null;
+        PDModel.loadingPromise = tf.loadLayersModel(`file://${PDModel.modelDir}`);
+        PDModel.model = await PDModel.loadingPromise;
+        PDModel.loadingPromise = null;
         console.timeEnd('Model Loading');
 
-        return PDModel.MODEL;
+        // Add class names
+        const classDir = "./tfjs-model-training/data/train"
+        const classes = PDModel.getFolderNames(classDir)
+        PDModel.classNames.push(...classes)
+        console.log(`Found ${classes.length} classes from the model: [${classes.join(', ')}]`)
+
+        return PDModel.model;
     },
 
     /**
@@ -46,7 +75,7 @@ const PDModel = {
     preprocessImage: (imagePath) => {
         const imageBuffer = fs.readFileSync(imagePath); // Read image as a buffer
         const imageTensor = tf.node.decodeImage(imageBuffer, 3) // Decode the image to a tensor
-            .resizeNearestNeighbor([PDModel.IMAGE_SIZE, PDModel.IMAGE_SIZE]) // Resize to the target size
+            .resizeNearestNeighbor([PDModel.imageSize, PDModel.imageSize]) // Resize to the target size
             .toFloat() // Convert to floating point
             .div(255.0) // Normalize pixel values to [0, 1]
             .expandDims(); // Add a batch dimension
@@ -61,12 +90,12 @@ const PDModel = {
      * @returns {Object} { predictedIndex, predictedClass, probabilities }
      */
     predict: async (imagePath) => {
-        if (!PDModel.MODEL) PDModel.MODEL = await PDModel.load(); // Ensure the model is loaded
+        if (!PDModel.model) PDModel.model = await PDModel.load(); // Ensure the model is loaded
 
         // Use tf.tidy to manage memory for tensors created inside this block
         const result = tf.tidy(() => {
             const imageTensor = PDModel.preprocessImage(imagePath); // Preprocess the input image
-            const prediction = PDModel.MODEL.predict(imageTensor); // Perform inference
+            const prediction = PDModel.model.predict(imageTensor); // Perform inference
 
             // Get the index of the highest probability and predicted class
             const predictedIndex = prediction.argMax(-1).dataSync()[0];
@@ -75,7 +104,7 @@ const PDModel = {
             return { predictedIndex, probabilities };
         });
 
-        const predictedClass = PDModel.CLASS_NAMES[result.predictedIndex];
+        const predictedClass = PDModel.classNames[result.predictedIndex];
         return { ...result, predictedClass };
     },
 
