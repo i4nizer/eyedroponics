@@ -24,7 +24,7 @@ void http_send_image_cb(camera_fb_t *fb)
     }
 
     HTTPClient http;
-    http.begin(http_endpoint); // Replace with your server endpoint
+    http.begin(String(http_endpoint) + "/image"); // Replace with your server endpoint
 
     String boundary = "----ESP32CAMBoundary";
     String bodyStart = "--" + boundary + "\r\n"
@@ -94,9 +94,70 @@ void http_send_image_capture(void *parameter)
         camera_capture(http_send_image_cb);
         
         int end = millis();
-        log_info("HTTP", String("HTTP Task finished in " + String(end - start) + "ms with " + String(http_send_interval) + "ms interval.").c_str());
+        log_info("HTTP", String("HTTP Task (image) finished in " + String(end - start) + "ms with " + String(http_send_image_interval) + "ms interval.").c_str());
         
-        vTaskDelay(http_send_interval);
+        vTaskDelay(http_send_image_interval);
+    }
+}
+
+/**
+ * Ensure the payload is in JSON format.
+ * It will be sent to the specified url.
+ */
+void http_send_json(const char * url, const char* payload)
+{
+    HTTPClient http;
+
+    // Specify the content type for JSON
+    http.begin(url); // Server URL
+    http.addHeader("Content-Type", "application/json");
+
+    // Send HTTP POST request
+    int code = http.POST(payload);
+
+    // Check if success
+    if (code > 0)
+    {
+        log_success("HTTP", "JSON sent successfully.");
+        Serial.printf("[SUCCESS] [HTTP] Response code: %d\n", code);
+    }
+    else
+    {
+        log_error("HTTP", "Failed to send JSON.");
+        Serial.printf("[ERROR]   [HTTP] Error: %s\n", http.errorToString(code).c_str());
+    }
+
+    // Cleanup
+    http.end();
+}
+
+/**
+ * Used as task, reads serial and throws the data.
+ */
+void http_send_serial_data(void *parameter)
+{
+    while (true) {
+        
+        // Check if there are Serial data
+        if (!Serial.available())
+        {
+            vTaskDelay(500);
+            continue;
+        }
+
+        // Start with time measurement
+        int start = millis();
+
+        String url = Serial.readStringUntil('\n');
+        String data = Serial.readStringUntil('\n');
+
+        http_send_json(url.c_str(), data.c_str());
+
+        int end = millis();
+        log_info("HTTP", String("HTTP Task (serial) finished in " + String(end - start) + "ms with 1000ms interval.").c_str());
+
+        // no delay to make it live sending
+        // vTaskDelay(1000);
     }
 }
 
@@ -106,7 +167,8 @@ void http_send_image_capture(void *parameter)
 void http_start_task()
 {
     log_info("HTTP", "HTTP Task started.");
-    xTaskCreate(http_send_image_capture, "HTTP Task", 12000, NULL, 1, NULL);
+    xTaskCreate(http_send_image_capture, "HTTP Task (image)", 12000, NULL, 1, NULL);
+    xTaskCreate(http_send_serial_data, "HTTP Task (serial)", 8192, NULL, 1, NULL);
 }
 
 
