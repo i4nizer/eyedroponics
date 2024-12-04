@@ -112,6 +112,9 @@ void http_send_json(const char * url, const char* payload)
     http.begin(url); // Server URL
     http.addHeader("Content-Type", "application/json");
 
+    // Include an existing api key
+    if (http_api_key) http.addHeader("x-api-key", http_api_key);
+
     // Send HTTP POST request
     int code = http.POST(payload);
 
@@ -149,9 +152,9 @@ void http_send_serial_data(void *parameter)
         int start = millis();
 
         String url = Serial.readStringUntil('\n');
-        String data = Serial.readStringUntil('\n');
+        String json = Serial.readStringUntil('\n');
 
-        http_send_json(url.c_str(), data.c_str());
+        http_send_json(url.c_str(), json.c_str());
 
         int end = millis();
         log_info("HTTP", String("HTTP Task (serial) finished in " + String(end - start) + "ms with 1000ms interval.").c_str());
