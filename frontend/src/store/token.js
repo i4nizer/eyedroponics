@@ -32,12 +32,6 @@ export const useTokenStore = defineStore('token', () => {
         age.value = Date.now() + expiresIn
     }
 
-    const clear = () => {
-        access.value = ''
-        refresh.value = ''
-        age.value = 0
-    }
-
     const rotate = async () => {
         
         await axios
@@ -54,7 +48,6 @@ export const useTokenStore = defineStore('token', () => {
                 if (err.response?.data) msg = err.response?.data
                 
                 // re-auth if invalidated
-                clear()
                 notif.addError(msg)
                 router.push({ name: 'Sign In' })
             })
@@ -83,7 +76,6 @@ export const useTokenStore = defineStore('token', () => {
         rotating,
         expiresIn,
         set,
-        clear,
         rotate,
         startRotation,
     }

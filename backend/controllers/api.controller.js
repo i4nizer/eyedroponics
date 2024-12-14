@@ -48,7 +48,7 @@ const apiController = {
             prediction.imageBuffer = imageFile;
 
             // prediction = { predictedIndex, predictedClass, probabilities, imageBuffer }
-            emitOnApiKey(apiKey, prediction);
+            emitOnApiKey('image-', apiKey, prediction);
 
             // No Pest: remove the image file
             if (prediction.predictedClass == 'Healthy Lettuce') return fs.unlinkSync(file.path)
@@ -75,6 +75,7 @@ const apiController = {
             // Access
             const { ph } = req.body
             const { userId, projectId, deviceId } = req.key
+            const apiKey = req.headers['x-api-key'];    // raw
 
             // Respond early
             res.send({ message: 'pH data received successfully.' });
@@ -83,6 +84,9 @@ const apiController = {
             // Save the pH Level
             const PH = new phModel({ ph, deviceId, projectId })
             await PH.save()
+
+            // Emit the pH
+            emitOnApiKey('ph-', apiKey, PH.toObject())
 
             // Check if within threshold (threshold is on creation of project)
             const threshold = await thresholdModel.findOne({ projectId })
@@ -105,8 +109,9 @@ const apiController = {
         
         try {
             // Access
-            const { nitrogen, phosphorus, potassium } = req.body
             const { userId, projectId, deviceId } = req.key
+            const { nitrogen, phosphorus, potassium } = req.body
+            const apiKey = req.headers['x-api-key'];    // raw
 
             // Respond early
             res.send({ message: 'NPK data received successfully.' });
@@ -115,6 +120,9 @@ const apiController = {
             // Save the NPK Level
             const NPK = new npkModel({ nitrogen, phosphorus, potassium, deviceId, projectId })
             await NPK.save()
+
+            // Emit the NPK
+            emitOnApiKey('npk-', apiKey, NPK.toObject())
 
             // Check if within threshold (one threshold is made on creation of project)
             const threshold = await thresholdModel.findOne({ projectId })

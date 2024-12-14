@@ -25,7 +25,8 @@ export const useDataStore = defineStore('Data', () => {
         const minute = date.getMinutes().toString().padStart(2, '0')
         const ampm = date.getHours() >= 12 ? 'pm' : 'am'
 
-        return `${month}/${day}/${year} ${hour}:${minute}${ampm}`
+        //return `${month}/${day}/${year} ${hour}:${minute}${ampm}`
+        return `${hour}:${minute}${ampm}`
     }
 
     // ---NPKs
@@ -36,7 +37,7 @@ export const useDataStore = defineStore('Data', () => {
         return res
     }
 
-    const getNPKChartData = (projectId) => {
+    const getNPKChartData = (deviceId) => {
         const N = {
             label: 'Nitrogen',  
             backgroundColor: '#4CAF50',
@@ -61,7 +62,7 @@ export const useDataStore = defineStore('Data', () => {
         const labels = []
 
         for (const npk of NPKs.value) {
-            if (npk.projectId != projectId) continue
+            if (npk.deviceId != deviceId) continue
             
             N.data.push(npk.nitrogen)
             P.data.push(npk.phosphorus)
@@ -80,7 +81,7 @@ export const useDataStore = defineStore('Data', () => {
         return res
     }
 
-    const getPHChartData = (projectId) => {
+    const getPHChartData = (deviceId) => {
         const pH = {
             label: 'pH Level',
             backgroundColor: '#8e44ad',
@@ -91,7 +92,7 @@ export const useDataStore = defineStore('Data', () => {
         const labels = []
 
         for (const ph of PHs.value) {
-            if (ph.projectId != projectId) continue
+            if (ph.deviceId != deviceId) continue
             
             pH.data.push(ph.ph)
             labels.push(formatDate(ph.createdAt))

@@ -89,6 +89,8 @@ void http_send_image_capture(void *parameter)
 {
     while(true) {
 
+        if (!wifi_connected) continue;
+
         int start = millis();
         
         camera_capture(http_send_image_cb);
@@ -106,6 +108,13 @@ void http_send_image_capture(void *parameter)
  */
 void http_send_json(const char * url, const char* payload)
 {
+    // Check internet
+    if (!wifi_connected) 
+    {
+        log_error("HTTP", "Failed to send serial data, not connected to WiFi.");
+        return;
+    }
+
     HTTPClient http;
 
     // Specify the content type for JSON
@@ -140,19 +149,18 @@ void http_send_json(const char * url, const char* payload)
 void http_send_serial_data(void *parameter)
 {
     while (true) {
+
+        if (!wifi_connected) continue;
         
         // Check if there are Serial data
-        if (!Serial.available())
-        {
-            vTaskDelay(500);
-            continue;
-        }
+        if (!Serial.available()) continue;
 
         // Start with time measurement
         int start = millis();
 
         String url = Serial.readStringUntil('\n');
         String json = Serial.readStringUntil('\n');
+        log_info("SERIAL", String("Url: " + url + " - JSON: " + json).c_str());
 
         http_send_json(url.c_str(), json.c_str());
 

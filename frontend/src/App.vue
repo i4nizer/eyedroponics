@@ -12,10 +12,10 @@
 </template>
 
 <script setup>
+import { useTokenStore } from "./store/token";
 import { defineAsyncComponent } from "vue";
 import AppBar from "./components/layout/AppBar.vue";
 import NavDrawer from "./components/layout/NavDrawer.vue";
-import { useTokenStore } from "./store/token";
 
 const Notif = defineAsyncComponent(() => import("@/components/util/Notif.vue"));
 

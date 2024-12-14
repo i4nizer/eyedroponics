@@ -15,7 +15,10 @@ const sensorController = {
 
             // Query pH data for all the project IDs
             const phs = await phModel.find({ projectId: { $in: projectIds } })
+                .sort({ createdAt: -1 })
+                .limit(30)
             
+            phs.sort((a, b) => a.createdAt - b.createdAt)
             res.send({ obj: phs })
 
         } catch (error) { res.status(500).send(error.toString()) }
@@ -31,7 +34,10 @@ const sensorController = {
 
             // Query NPK data for all the project IDs
             const npks = await npkModel.find({ projectId: { $in: projectIds } })
+                .sort({ createdAt: -1 })
+                .limit(30)
             
+            npks.sort((a, b) => a.createdAt - b.createdAt)
             res.send({ obj: npks })
 
         } catch (error) { res.status(500).send(error.toString()) }

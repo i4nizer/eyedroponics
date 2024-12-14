@@ -10,12 +10,12 @@
             />
             <NPKChart 
                 v-for="npk in NPKs"
-                :project-id="props.projectId"
+                :device-id="npk._id"
                 :key="npk._id"
             />
             <PHChart 
                 v-for="ph in PHs"
-                :project-id="props.projectId"
+                :device-id="ph._id"
                 :key="ph._id"
             />
             
@@ -24,8 +24,9 @@
 </template>
 
 <script setup>
+import socket from '@/utils/socket';
 import { useProjectStore } from '@/store/project';
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, onMounted, onUnmounted } from 'vue';
 
 const Camera = defineAsyncComponent(() => import("@/components/dashboard/Camera.vue"))
 const NPKChart = defineAsyncComponent(() => import("@/components/dashboard/NPKChart.vue"))
@@ -46,9 +47,21 @@ const NPKs = devices.filter(d => d.sensors.includes('NPK'))
 const PHs = devices.filter(d => d.sensors.includes('pH'))
 
 
+// Connect Socket and Register Devices
+onMounted(() => {
+
+    socket.connect()
+    devices.forEach(d => socket.emit('register', d.key))
+
+})
+
+// Unregister Devices and Disconnect Socket
+onUnmounted(() => {
+
+    devices.forEach(d => socket.emit('unregister', d.key))
+    socket.disconnect()
+
+})
+
 
 </script>
-
-<style lang="scss" scoped>
-
-</style>

@@ -32,11 +32,11 @@ const onConnection = (socket) => {
 /**
  * @param {string} key ApiKey of the device
  */
-const emitOnApiKey = (key, args) => {
+const emitOnApiKey = (prefix, key, args) => {
     const socket = socketMap.get(key);
     if (!socket) return;
 
-    socket.emit(`image-${key}`, args)
+    socket.emit(`${prefix}${key}`, args)
 }
 
 /**

@@ -4,12 +4,10 @@
             <v-app-bar-nav-icon @click="layout.drawer.value = !layout.drawer.value"></v-app-bar-nav-icon>
         </template>
 
-        <v-app-bar-title>Eyedroponics</v-app-bar-title>
+        <v-app-bar-title>Eye    droponics</v-app-bar-title>
 
         <template v-slot:append>
-            <v-btn icon="mdi-heart"></v-btn>
-            <v-btn icon="mdi-magnify"></v-btn>
-            <v-btn icon="mdi-dots-vertical"></v-btn>
+            <v-btn icon="mdi-alert" to="/alerts"></v-btn>
         </template>
     </v-app-bar>
 </template>

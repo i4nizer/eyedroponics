@@ -7,10 +7,10 @@ const fs = require('fs');
 const PDModel = {
 
     // Directory where the TensorFlow.js model is stored
-    modelDir: './tfjs-model-training/models/v4/model.json',
+    modelDir: './tfjs-model-training/models/v7/model.json',
     
     // Image size to which all inputs will be resized
-    imageSize: 128,
+    imageSize: 256,
 
     // Class name as read from a directory
     classNames: [],
